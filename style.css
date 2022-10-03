@@ -1,13 +1,17 @@
 :root {
-    --white: #fff;
+    --white: #f8fafc;
+    --offwhite: #f1f5f9;
+    --white-alpha: #fff8;
     --black: #000;
     --gray: lightslategray;
+    --accent1: #f59e0b;
     --foreground: var(--white);
 }
 
 body {
     font-family: Verdana, Geneva, Tahoma, sans-serif;
     font-size: 16px;
+    background-color: var(--offwhite);
     color: var(--foreground);
     
     width: 100vw;
@@ -23,5 +27,27 @@ body {
     width: 80vmin;
     height: 80vmin;
     background-color: var(--gray);
-    box-shadow: 8px 8px 8px #0003;
+    box-shadow: 8px 8px 16px #0003;
+    border-radius: 5px;
+    padding: 20px;
+
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+    gap: 20px;
+}
+
+.slot {
+    background-color: var(--white-alpha);
+    border-radius: 5px;
+
+    box-shadow: inset 4px 4px 8px #0003;
+
+    text-align: center;
+    vertical-align: middle;
+    line-height: 100px;
+}
+
+.slot:hover {
+    border: 2px double var(--accent1);
 }
