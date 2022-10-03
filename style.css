@@ -40,7 +40,6 @@ body {
 .slot {
     background-color: var(--white-alpha);
     border-radius: 5px;
-
     box-shadow: inset 4px 4px 8px #0003;
 
     text-align: center;
