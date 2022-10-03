@@ -1,6 +1,14 @@
+:root {
+    --white: #fff;
+    --black: #000;
+    --gray: lightslategray;
+    --foreground: var(--white);
+}
+
 body {
     font-family: Verdana, Geneva, Tahoma, sans-serif;
     font-size: 16px;
+    color: var(--foreground);
     
     width: 100vw;
     height: 100vh;
@@ -14,6 +22,6 @@ body {
 .container.board {
     width: 80vmin;
     height: 80vmin;
-    background-color: lightslategray;
+    background-color: var(--gray);
     box-shadow: 8px 8px 8px #0003;
 }
