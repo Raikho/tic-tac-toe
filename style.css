@@ -82,12 +82,12 @@ button:hover {
     outline: 2px double var(--accent1);
 }
 
-.circle>div.shape {
+.slot[data-value="circle"]>div.shape {
     height: 100%;
     content: url(img/circle.svg);
     filter: invert(81%) sepia(34%) saturate(6757%) hue-rotate(358deg) brightness(99%) contrast(94%) drop-shadow(4px 4px 5px #0004);
 }
-.cross>div.shape {
+.slot[data-value="cross"]>div.shape {
     height: 100%;
     content: url(img/cross.svg);
     filter: invert(81%) sepia(34%) saturate(6757%) hue-rotate(358deg) brightness(99%) contrast(94%) drop-shadow(4px 4px 5px #0004);
