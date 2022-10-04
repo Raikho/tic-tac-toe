@@ -24,7 +24,17 @@ let board = (function() {
         slot.node.classList.replace('empty', value);
     }
 
-    return {array, add};
+    let reset = function() {
+        for (let row of array) {
+            for (let slot of row) {
+                slot.value = 'empty';
+                slot.node.classList.remove('cross', 'circle');
+                slot.node.classList.add('empty');
+            }
+        }
+    }
+
+    return {array, add, reset};
 })();
 
 let game = (function() {
@@ -40,6 +50,8 @@ const nodeList = document.querySelectorAll('.slot');
         console.log('clicked', row, col);
     })
 });
+const resetButtonNode = document.getElementById('reset');
+resetButtonNode.addEventListener("click", board.reset);
 
 board.add(0,2,'circle');
 console.log('board:', board, board.array);
