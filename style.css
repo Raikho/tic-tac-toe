@@ -5,7 +5,8 @@
     --black: #000;
     --gray: lightslategray;
     --accent1: #f59e0b;
-    --foreground: var(--white);
+    --accent2: #38bdf8;
+    --foreground: var(--black);
 }
 
 body {
@@ -19,8 +20,38 @@ body {
     margin: 0;
 
     display: flex;
+    flex-wrap: wrap;
     justify-content: center;
     align-items: center;
+    gap: 20px;
+}
+
+.container.controls {
+    width: 200px;
+    height: 200px;
+    background-color: var(--gray);
+
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: center;
+
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 8px 8px 16px #0003;
+}
+
+button {
+    color: var(--white);
+    background-color: var(--accent2);
+    font-size: 20px;
+    font-weight: 700;
+    box-shadow: inset 4px 4px 4px #0003;
+    border-radius: 5px;
+    padding: 10px 20px;
+}
+button:hover {
+    filter: brightness(1.05);
 }
 
 .container.board {
