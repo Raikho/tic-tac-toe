@@ -20,16 +20,17 @@ let board = (function() {
 
     let add = function(row, col, value) {
         let slot = array[row][col];
-        slot.value = value;
-        slot.node.classList.replace('empty', value);
+        if (slot.value = 'empty') {
+            slot.value = value;
+            slot.node.dataset.value = value;
+        }
     }
 
     let reset = function() {
         for (let row of array) {
             for (let slot of row) {
                 slot.value = 'empty';
-                slot.node.classList.remove('cross', 'circle');
-                slot.node.classList.add('empty');
+                slot.node.dataset.value = 'empty';
             }
         }
     }
