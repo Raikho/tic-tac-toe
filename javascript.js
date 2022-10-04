@@ -1,5 +1,3 @@
-console.log('Hello, World!');
-
 let board = (function() {
 
     let array = (function() {
@@ -32,6 +30,16 @@ let board = (function() {
 let game = (function() {
     return {};
 })();
+
+const nodeList = document.querySelectorAll('.slot');
+[...nodeList].forEach((node) => {
+    node.addEventListener("click", () => {
+        let row = node.dataset.row;
+        let col = node.dataset.col;
+        board.add(row, col, 'circle');
+        console.log('clicked', row, col);
+    })
+});
 
 board.add(0,2,'circle');
 console.log('board:', board, board.array);
