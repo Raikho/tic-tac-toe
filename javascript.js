@@ -20,9 +20,10 @@ let board = (function() {
         return full;
     })();
 
-    let add = function(row, col) {
-        array[row][col].value = 'circle';
-        array[row][col].node.textContent = 'circle';
+    let add = function(row, col, value) {
+        let slot = array[row][col];
+        slot.value = value;
+        slot.node.classList.replace('empty', value);
     }
 
     return {array, add};
@@ -32,6 +33,6 @@ let game = (function() {
     return {};
 })();
 
-board.add(0,2);
+board.add(0,2,'circle');
 console.log('board:', board, board.array);
 console.log('game:', game);

@@ -48,7 +48,7 @@ body {
 }
 
 .slot:hover {
-    border: 2px double var(--accent1);
+    outline: 2px double var(--accent1);
 }
 
 .circle>div.shape {
