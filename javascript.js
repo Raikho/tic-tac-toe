@@ -39,16 +39,27 @@ let board = (function() {
 })();
 
 let game = (function() {
-    return {};
+    let click = function(row, col, type) {
+        if (type === 'leftClick')
+            board.add(row, col, 'circle');
+        else
+            board.add(row, col, 'cross');
+    }
+
+    return {click};
 })();
 
-const nodeList = document.querySelectorAll('.slot');
-[...nodeList].forEach((node) => {
-    node.addEventListener("click", () => {
-        let row = node.dataset.row;
-        let col = node.dataset.col;
-        board.add(row, col, 'circle');
-        console.log('clicked', row, col);
+const slotNodeList = document.querySelectorAll('.slot');
+[...slotNodeList].forEach((slotNode) => {
+    slotNode.addEventListener('click', (e) => {
+        let row = slotNode.dataset.row;
+        let col = slotNode.dataset.col;
+        game.click(row, col, 'leftClick');
+    })
+    slotNode.addEventListener('auxclick', (e) => {
+        let row = slotNode.dataset.row;
+        let col = slotNode.dataset.col;
+        game.click(row, col, 'middleClick');
     })
 });
 const resetButtonNode = document.getElementById('reset');
