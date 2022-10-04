@@ -10,7 +10,6 @@ let board = (function() {
                 row.push({value: 'empty'});
             full.push(row);
         }
-
         let slotNodes = document.querySelectorAll('.slot');
         for (let i=0; i<slotNodes.length; i++) {
             let slotNode = slotNodes[i]
@@ -18,7 +17,6 @@ let board = (function() {
             let col = slotNode.dataset.col;
             full[row][col].node = slotNode
         }
-
         return full;
     })();
 
