@@ -18,6 +18,17 @@ let board = (function() {
         return full;
     })();
 
+    let winConditions = {
+        row1: [[0,0], [0,1], [0,2]],
+        row2: [[1,0], [1,1], [1,2]],
+        row3: [[2,0], [2,1], [2,2]],
+        col1: [[0,0], [1,0], [2,0]],
+        col2: [[0,1], [1,1], [2,1]],
+        col3: [[0,2], [1,2], [02,2]],
+        diagonal1: [[0,0], [1,1], [2,2]],
+        diagonal2: [[0,2], [1,1], [2,0]],
+    };
+
     let add = function(row, col, value) {
         let slot = array[row][col];
         if (slot.value === 'empty') {
@@ -36,12 +47,9 @@ let board = (function() {
     }
 
     let toNumber = function(value) {
-        if (value === 'empty')
-            return 0;
-        if (value === 'circle')
-            return 1;
-        if (value === 'cross')
-            return -1;
+        if (value === 'empty') return 0;
+        if (value === 'circle') return 1;
+        if (value === 'cross') return -1;
     }
 
     let check = function() {
@@ -50,34 +58,21 @@ let board = (function() {
             shape: null,
             direction: null
         }
-
-        let winConditions = {
-            row1: [0, 1, 2],
-            row2: [3, 4, 5],
-            row3: [6, 7, 8],
-            col1: [3, 3, 6],
-            col2: [1, 4, 7],
-            col3: [2, 5, 8],
-            diagonal1: [0, 4, 8],
-            diagonal2: [2, 4, 6]
-        }
-
-        let flatArray = [];
-        for (let i=0; i<3; i++) {
-            for (let j=0; j<3; j++)
-                flatArray[(i*3+j)] = toNumber(array[i][j].value);
-        }   
-
-        for (let x in winConditions) {
-            let sum = flatArray[winConditions[x][0]] + flatArray[winConditions[x][1]] + flatArray[winConditions[x][2]];
+        for (let condition in winConditions) {
+            let sum = 0;
+            for (let i=0; i<3; i++) {
+                let row = winConditions[condition][i][0];
+                let col = winConditions[condition][i][1];
+                sum += toNumber(array[row][col].value);
+            }
+            
             if (Math.abs(sum) == 3){
                 result.hasWon = true;
                 result.shape = (sum == 3) ? 'circle' : 'cross';
-                result.direction = x;
+                result.direction = condition;
                 return result;
             }
         }
-
         return result;
     }
     return {array, add, reset, check};
