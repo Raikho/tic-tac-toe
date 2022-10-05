@@ -87,10 +87,6 @@ let game = (function() {
     let clickSlot = function(row, col, type) {
         board.add(row, col, turnShape);
         toggleTurn();
-        // if (type === 'leftClick')
-            // board.add(row, col, 'circle');
-        // else
-            // board.add(row, col, 'cross');
 
         let result = board.check();
         console.log(result)
