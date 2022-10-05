@@ -80,8 +80,19 @@ let game = (function() {
 
     let turnShape = 'circle';
 
+    let updateTurn = function() {
+        if (turnShape === 'circle') {
+            crossTurnNode.classList.remove('active');
+            circleTurnNode.classList.add('active');
+        } else {
+            crossTurnNode.classList.add('active');
+            circleTurnNode.classList.remove('active');
+        }
+    }
+
     let toggleTurn = function() {
         turnShape = (turnShape === 'circle') ? 'cross' : 'circle';
+        updateTurn();
     };
 
     let clickSlot = function(row, col, type) {
@@ -97,6 +108,9 @@ let game = (function() {
     }
     return {clickSlot, reset};
 })();
+
+const circleTurnNode = document.querySelector('.circle-turn');
+const crossTurnNode = document.querySelector('.cross-turn');
 
 const slotNodeList = document.querySelectorAll('.slot');
 [...slotNodeList].forEach((slotNode) => {
