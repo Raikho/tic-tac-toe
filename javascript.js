@@ -10,7 +10,7 @@ let board = (function() {
         let slotNodes = document.querySelectorAll('.slot');
         for (let node of [...slotNodes])
             full[node.dataset.row][node.dataset.col].node = node;
-            
+
         return full;
     })();
 
@@ -25,22 +25,23 @@ let board = (function() {
         diagonal2: [[0,2], [1,1], [2,0]],
     };
 
+    // sets slot value in both array and DOM
+    let set = function(slot, value) {
+        slot.value = value;
+        slot.node.dataset.value = value;
+    };
+
     let add = function(row, col, value) {
         let slot = array[row][col];
-        if (slot.value === 'empty') {
-            slot.value = value;
-            slot.node.dataset.value = value;
-        }
-    }
+        if (slot.value === 'empty')
+            set(slot, value);
+    };
 
     let reset = function() {
-        for (let row of array) {
-            for (let slot of row) {
-                slot.value = 'empty';
-                slot.node.dataset.value = 'empty';
-            }
-        }
-    }
+        for (let row of array)
+            for (let slot of row)
+                set(slot, 'empty');
+    };
 
     let toNumber = function(value) {
         if (value === 'empty') return 0;
@@ -71,7 +72,7 @@ let board = (function() {
         }
         return result;
     }
-    return {array, add, reset, check};
+    return {add, reset, check};
 })();
 
 let game = (function() {
@@ -109,5 +110,5 @@ const resetButtonNode = document.getElementById('reset');
 resetButtonNode.addEventListener("click", game.reset);
 
 board.add(0,2,'circle');
-console.log('board:', board, board.array);
+console.log('board:', board);
 console.log('game:', game);
