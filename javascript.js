@@ -1,20 +1,16 @@
 let board = (function() {
 
     let array = (function() {
-        let full = [];
-        for (let i=0; i<3; i++){
-            let row = [];
+        let full =[[{}, {}, {}], [{}, {}, {}], [{}, {}, {}]];
+        
+        for (let i=0; i<3; i++)
             for (let j=0; j<3; j++)
-                row.push({value: 'empty'});
-            full.push(row);
-        }
+                full[i][j].value = 'empty';
+
         let slotNodes = document.querySelectorAll('.slot');
-        for (let i=0; i<slotNodes.length; i++) {
-            let slotNode = slotNodes[i]
-            let row = slotNode.dataset.row;
-            let col = slotNode.dataset.col;
-            full[row][col].node = slotNode
-        }
+        for (let node of [...slotNodes])
+            full[node.dataset.row][node.dataset.col].node = node;
+            
         return full;
     })();
 
