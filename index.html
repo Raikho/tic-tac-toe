@@ -9,12 +9,13 @@
 <body>
     <div class="container controls">
         <button id="reset">Reset</button>
-        <button id="two-player">Two-Player Same Mouse</button>
-        <div class="container turn">
+        <button class="game-mode" id="two-player">2P Local</button>
+        <div class="container turn-order">
             <div class="title">Turn:</div>
-            <div class="circle-turn">O</div>
+            <div class="circle-turn active">O</div>
             <div class="cross-turn">X</div>
         </div>
+        <button class="game-mode" id="one-player">1P vs AI</button>
     </div>
     <div class="container board">
         <div class="slot" data-value="empty" data-col="0" data-row="0"><div class="shape"></div></div>
