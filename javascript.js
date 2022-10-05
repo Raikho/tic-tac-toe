@@ -3,9 +3,9 @@ let board = (function() {
     let array = (function() {
         let full =[[{}, {}, {}], [{}, {}, {}], [{}, {}, {}]];
         
-        for (let i=0; i<3; i++)
-            for (let j=0; j<3; j++)
-                full[i][j].value = 'empty';
+        for (let row of full)
+            for (let slot of row)
+                slot.value = 'empty';
 
         let slotNodes = document.querySelectorAll('.slot');
         for (let node of [...slotNodes])
@@ -47,7 +47,7 @@ let board = (function() {
         if (value === 'empty') return 0;
         if (value === 'circle') return 1;
         if (value === 'cross') return -1;
-    }
+    };
 
     let check = function() {
         let result = {
@@ -71,17 +71,26 @@ let board = (function() {
             }
         }
         return result;
-    }
+    };
+
     return {add, reset, check};
 })();
 
 let game = (function() {
 
+    let turnShape = 'circle';
+
+    let toggleTurn = function() {
+        turnShape = (turnShape === 'circle') ? 'cross' : 'circle';
+    };
+
     let clickSlot = function(row, col, type) {
-        if (type === 'leftClick')
-            board.add(row, col, 'circle');
-        else
-            board.add(row, col, 'cross');
+        board.add(row, col, turnShape);
+        toggleTurn();
+        // if (type === 'leftClick')
+            // board.add(row, col, 'circle');
+        // else
+            // board.add(row, col, 'cross');
 
         let result = board.check();
         console.log(result)
