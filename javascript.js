@@ -20,7 +20,7 @@ let board = (function() {
         row3: [[2,0], [2,1], [2,2]],
         col1: [[0,0], [1,0], [2,0]],
         col2: [[0,1], [1,1], [2,1]],
-        col3: [[0,2], [1,2], [02,2]],
+        col3: [[0,2], [1,2], [2,2]],
         diagonal1: [[0,0], [1,1], [2,2]],
         diagonal2: [[0,2], [1,1], [2,0]],
     };
@@ -91,10 +91,40 @@ let board = (function() {
     let generateMove = function() {
         console.log('AI is thinking...');
 
-        // Check all win conditions
-        // Add win conditions that dont have Circle to array
-        // Pick random number from array.length
-        // Translate to slot and put Cross into that slot
+        // Add win conditions without Circle to array
+        let possibleConditions = [];
+        for (condition in winConditions) {
+            let possible = true;
+            for (let i=0; i<3; i++) {
+                let row = winConditions[condition][i][0];
+                let col = winConditions[condition][i][1];
+                if (array[row][col].value === 'circle')
+                    possible = false;
+            }
+            if (possible)
+                possibleConditions.push(condition);
+        }
+        console.log(possibleConditions);
+
+        // Add non-occupied slots from win conditions to array, can repeat
+        let possibleSlots = [];
+        for (condition of possibleConditions) {
+            for (let i=0; i<3; i++) {
+                let row = winConditions[condition][i][0];
+                let col = winConditions[condition][i][1];
+                if (array[row][col].value === 'empty')
+                    possibleSlots.push(winConditions[condition][i]);
+            }
+        }
+        console.log(possibleSlots);
+        
+        // Pick random slot from possible slots, add slot
+        let num = Math.floor(Math.random() * possibleSlots.length);
+        let row = possibleSlots[num][0];
+        let col = possibleSlots[num][1];
+        console.log({row, col});
+
+        add(row, col, 'cross');
     }
 
     return {add, reset, check, generateMove};
@@ -163,7 +193,7 @@ let game = (function() {
             board.add(row, col, 'circle');
             checkBoard();
             if (gameMode === 'one-player'){
-                board.generateMove();
+                setTimeout(board.generateMove, 500);
                 checkBoard();
             }
         }
