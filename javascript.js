@@ -138,10 +138,14 @@ let game = (function() {
 
         let result = board.check();
         console.log(result)
-        if (result.state === 'won')
+        if (result.state === 'won') {
             resultsNode.textContent = `${result.shape} has won!`;
-        else if (result.state === 'tie')
+            updateGameMode('results');
+        }
+        else if (result.state === 'tie') {
             resultsNode.textContent = `You have tied!`;
+            updateGameMode('results');
+        }
     }
 
     let reset = function() {
