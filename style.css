@@ -6,6 +6,7 @@
     --black: #000;
     --gray: lightslategray;
     --accent1: #f59e0b;
+    --accent1-alpha: #f59e0b88;
     --accent2: #38bdf8;
     --accent2-dark: #0c4a6e;
     --accent2-alpha: #38bdf8;
@@ -176,4 +177,8 @@ button.game-mode.active {
 .board.active>.slot {
     background-color: var(--white-alpha);
     box-shadow: inset 4px 4px 8px #0003;
+}
+
+.board.active>.slot.highlight {
+    background-color: var(--accent1-alpha);
 }

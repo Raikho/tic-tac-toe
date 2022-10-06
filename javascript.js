@@ -42,9 +42,12 @@ let board = (function() {
     };
 
     let reset = function() {
-        for (let row of array)
-            for (let slot of row)
+        for (let row of array) {
+            for (let slot of row) {
                 set(slot, 'empty');
+                slot.node.classList.remove('highlight');
+            }
+        }
     };
 
     let toNumber = function(value) {
@@ -73,6 +76,7 @@ let board = (function() {
                 result.state = 'won';
                 result.shape = (sum == 3) ? 'Circle' : 'Cross';
                 result.direction = condition;
+                highlightWinningCondition(condition);
                 return result;
             }
         }
@@ -92,7 +96,23 @@ let board = (function() {
         return result;
     };
 
+    let highlightWinningCondition = function(condition) {
+        let slotNodes = document.querySelectorAll('.slot');
+        for (let node of [...slotNodes]) {
+            for (let slot of winConditions[condition]) {
+                let nodeRow = +node.dataset.row;
+                let nodeCol = +node.dataset.col;
+                let slotRow = slot[0];
+                let slotCol = slot[1];
+                if (nodeRow === slotRow && nodeCol === slotCol) {
+                    node.classList.add('highlight');
+                }
+            }
+        }
+    }
+
     let generateMove = function() {
+        //TODO: Recreate using sums, auto fill if 2/3 slots
         console.log('AI is thinking...');
 
         // Add win conditions without Circle to array
