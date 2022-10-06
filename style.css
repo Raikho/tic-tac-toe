@@ -2,6 +2,7 @@
     --white: #f8fafc;
     --offwhite: #f1f5f9;
     --white-alpha: #fff8;
+    --white-alpha2: #fff5;
     --black: #000;
     --gray: lightslategray;
     --accent1: #f59e0b;
@@ -139,9 +140,9 @@ button.game-mode.active {
 }
 
 .slot {
-    background-color: var(--white-alpha);
+    background-color: var(--white-alpha2);
+    box-shadow: inset 2px 2px 4px #0003;
     border-radius: 5px;
-    box-shadow: inset 4px 4px 8px #0003;
 
     text-align: center;
     vertical-align: middle;
@@ -160,4 +161,9 @@ button.game-mode.active {
     height: 100%;
     content: url(img/cross.svg);
     filter: invert(81%) sepia(34%) saturate(6757%) hue-rotate(358deg) brightness(99%) contrast(94%) drop-shadow(4px 4px 5px #0004);
+}
+
+.board.active>.slot {
+    background-color: var(--white-alpha);
+    box-shadow: inset 4px 4px 8px #0003;
 }

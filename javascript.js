@@ -117,15 +117,22 @@ let game = (function() {
         twoPlayerButtonNode.classList.remove('active');
         if (gameMode === 'one-player') {
             onePlayerButtonNode.classList.add('active');
+            boardNode.classList.add('active');
         }
         if (gameMode === 'two-player') {
             twoPlayerButtonNode.classList.add('active');
             currentTurn = 'circle';
+            boardNode.classList.add('active');
             updateTurn();
+        }
+        if (gameMode === 'standby') {
+            boardNode.classList.remove('active');
         }
     }
 
     let clickSlot = function(row, col) {
+        if (gameMode === 'standby' || gameMode === 'results')
+            return;
         board.add(row, col, currentTurn);
         toggleTurn();
 
@@ -134,7 +141,7 @@ let game = (function() {
         if (result.state === 'won')
             resultsNode.textContent = `${result.shape} has won!`;
         else if (result.state === 'tie')
-            resultsNode.textContent = `You have tied!`
+            resultsNode.textContent = `You have tied!`;
     }
 
     let reset = function() {
@@ -167,6 +174,8 @@ const slotNodeList = document.querySelectorAll('.slot');
         game.clickSlot(slotNode.dataset.row, slotNode.dataset.col);
     })
 });
+const boardNode = document.querySelector('.container.board');
+
 const resetButtonNode = document.getElementById('reset');
 resetButtonNode.addEventListener("click", game.reset);
 
