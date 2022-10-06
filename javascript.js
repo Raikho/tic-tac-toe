@@ -33,8 +33,12 @@ let board = (function() {
 
     let add = function(row, col, value) {
         let slot = array[row][col];
-        if (slot.value === 'empty')
+        if (slot.value === 'empty') {
             set(slot, value);
+            return true;
+        } else {
+            return false
+        }
     };
 
     let reset = function() {
@@ -134,6 +138,7 @@ let game = (function() {
 
     let currentTurn = 'none';
     let gameMode = 'standby';
+    let thinking = false;
 
     let toggleTurn = function() {
         if (currentTurn === 'circle') currentTurn = 'cross';
@@ -190,11 +195,20 @@ let game = (function() {
         }
 
         if (gameMode === 'one-player') {
-            board.add(row, col, 'circle');
-            checkBoard();
-            if (gameMode === 'one-player'){
-                setTimeout(board.generateMove, 500);
+            if (thinking) return;
+
+            let isSuccessful = board.add(row, col, 'circle');
+            
+            if (isSuccessful) {
                 checkBoard();
+                if (gameMode === 'one-player'){
+                    setTimeout(() => {
+                        board.generateMove();
+                        thinking = false;
+                    }, 500);
+                    thinking = true;
+                    checkBoard();
+                }
             }
         }
     }
