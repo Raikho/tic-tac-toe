@@ -175,9 +175,11 @@ const onePlayerButtonNode = document.getElementById('one-player');
 const twoPlayerButtonNode = document.getElementById('two-player');
 const resetButtonNode = document.getElementById('reset');
 onePlayerButtonNode.addEventListener('click', () => {
+    if (onePlayerButtonNode.classList.contains('inactive')) return;
     game.updateGameMode('one-player');
 });
 twoPlayerButtonNode.addEventListener('click', () => {
+    if (twoPlayerButtonNode.classList.contains('inactive')) return;
     game.updateGameMode('two-player');
 });
 resetButtonNode.addEventListener("click", game.reset);
