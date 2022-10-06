@@ -62,11 +62,13 @@ button#reset {
     margin: 20px;
     padding: 10px 20px;
 }
-
 button.game-mode {
     align-self: center;
     font-size: 14px;
     padding: 5px 10px;
+}
+button.game-mode.active {
+    border: 2px solid gold;
 }
 
 .container.turn-order {

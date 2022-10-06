@@ -78,10 +78,11 @@ let board = (function() {
 
 let game = (function() {
 
-    let turnShape = 'circle';
+    let currentTurn = 'circle';
+    let gameMode = 'standby';
 
     let updateTurn = function() {
-        if (turnShape === 'circle') {
+        if (currentTurn === 'circle') {
             crossTurnNode.classList.remove('active');
             circleTurnNode.classList.add('active');
         } else {
@@ -90,13 +91,23 @@ let game = (function() {
         }
     }
 
+    let updateGameMode = function(mode) {
+        gameMode = mode;
+        onePlayerButtonNode.classList.remove('active');
+        twoPlayerButtonNode.classList.remove('active');
+        if (gameMode === 'one-player')
+            onePlayerButtonNode.classList.add('active');
+        if (gameMode === 'two-player')
+            twoPlayerButtonNode.classList.add('active');
+    }
+
     let toggleTurn = function() {
-        turnShape = (turnShape === 'circle') ? 'cross' : 'circle';
+        currentTurn = (currentTurn === 'circle') ? 'cross' : 'circle';
         updateTurn();
     };
 
-    let clickSlot = function(row, col, type) {
-        board.add(row, col, turnShape);
+    let clickSlot = function(row, col) {
+        board.add(row, col, currentTurn);
         toggleTurn();
 
         let result = board.check();
@@ -105,29 +116,33 @@ let game = (function() {
 
     let reset = function() {
         board.reset();
+        currentTurn = 'circle';
+        updateTurn();
+        updateGameMode('standby');
     }
-    return {clickSlot, reset};
+    return {clickSlot, reset, updateGameMode};
 })();
 
 const circleTurnNode = document.querySelector('.circle-turn');
 const crossTurnNode = document.querySelector('.cross-turn');
 
+const onePlayerButtonNode = document.getElementById('one-player');
+const twoPlayerButtonNode = document.getElementById('two-player');
+onePlayerButtonNode.addEventListener('click', () => {
+    game.updateGameMode('one-player');
+});
+twoPlayerButtonNode.addEventListener('click', () => {
+    game.updateGameMode('two-player');
+});
+
 const slotNodeList = document.querySelectorAll('.slot');
 [...slotNodeList].forEach((slotNode) => {
-    slotNode.addEventListener('click', (e) => {
-        let row = slotNode.dataset.row;
-        let col = slotNode.dataset.col;
-        game.clickSlot(row, col, 'leftClick');
-    })
-    slotNode.addEventListener('auxclick', (e) => {
-        let row = slotNode.dataset.row;
-        let col = slotNode.dataset.col;
-        game.clickSlot(row, col, 'middleClick');
+    slotNode.addEventListener('click', () => {
+        game.clickSlot(slotNode.dataset.row, slotNode.dataset.col);
     })
 });
 const resetButtonNode = document.getElementById('reset');
 resetButtonNode.addEventListener("click", game.reset);
 
-board.add(0,2,'circle');
 console.log('board:', board);
 console.log('game:', game);
