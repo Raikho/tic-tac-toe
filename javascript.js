@@ -111,24 +111,34 @@ let board = (function() {
         console.log(possibleConditions);
 
         // Add non-occupied slots from win conditions to array, can repeat
-        let possibleSlots = [];
+        const possibleSlots = [[1, 1, 1], [1, 1, 1], [1, 1, 1]];
         for (condition of possibleConditions) {
             for (let i=0; i<3; i++) {
                 let row = winConditions[condition][i][0];
                 let col = winConditions[condition][i][1];
                 if (array[row][col].value === 'empty')
-                    possibleSlots.push(winConditions[condition][i]);
+                    possibleSlots[row][col] += 1;
             }
         }
-        console.log(possibleSlots);
-        
-        // Pick random slot from possible slots, add slot
-        let num = Math.floor(Math.random() * possibleSlots.length);
-        let row = possibleSlots[num][0];
-        let col = possibleSlots[num][1];
-        console.log({row, col});
 
-        add(row, col, 'cross');
+        // Get slots included in the most win conditions
+        let max = 1;
+        for (let i=0; i<3; i++)
+            for (let j=0; j<3; j++)
+                if (possibleSlots[i][j] > max) 
+                    max = possibleSlots[i][j];
+
+        const bestSlots = [];
+        for (let i=0; i<3; i++)
+            for (let j=0; j<3; j++)
+                if (possibleSlots[i][j] === max)
+                    bestSlots.push({row: i, col: j});
+        console.log('Best Slots:');
+        console.log(bestSlots);
+
+        // Pick random slot from possible slots
+        let num = Math.floor(Math.random() * bestSlots.length);
+        add(bestSlots[num].row, bestSlots[num].col, 'cross');
     }
 
     return {add, reset, check, generateMove};
