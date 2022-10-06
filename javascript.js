@@ -234,10 +234,10 @@ let game = (function() {
                 if (gameMode === 'one-player'){
                     setTimeout(() => {
                         board.generateMove();
+                        checkBoard();
                         thinking = false;
                     }, 500);
                     thinking = true;
-                    checkBoard();
                 }
             }
         }
