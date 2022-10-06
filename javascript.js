@@ -88,7 +88,16 @@ let board = (function() {
         return result;
     };
 
-    return {add, reset, check};
+    let generateMove = function() {
+        console.log('AI is thinking...');
+
+        // Check all win conditions
+        // Add win conditions that dont have Circle to array
+        // Pick random number from array.length
+        // Translate to slot and put Cross into that slot
+    }
+
+    return {add, reset, check, generateMove};
 })();
 
 let game = (function() {
@@ -143,9 +152,24 @@ let game = (function() {
     let clickSlot = function(row, col) {
         if (gameMode === 'standby' || gameMode === 'results')
             return;
-        board.add(row, col, currentTurn);
-        toggleTurn();
+        
+        if (gameMode === 'two-player') {
+            board.add(row, col, currentTurn);
+            toggleTurn();
+            checkBoard();
+        }
 
+        if (gameMode === 'one-player') {
+            board.add(row, col, 'circle');
+            checkBoard();
+            if (gameMode === 'one-player'){
+                board.generateMove();
+                checkBoard();
+            }
+        }
+    }
+
+    let checkBoard = function() {
         let result = board.check();
         console.log(result)
         if (result.state === 'won') {
