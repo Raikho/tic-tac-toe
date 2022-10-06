@@ -51,7 +51,7 @@ let board = (function() {
 
     let check = function() {
         let result = {
-            hasWon: false,
+            state: 'inProgress',
             shape: null,
             direction: null
         }
@@ -64,12 +64,15 @@ let board = (function() {
             }
             
             if (Math.abs(sum) == 3){
-                result.hasWon = true;
-                result.shape = (sum == 3) ? 'circle' : 'cross';
+                result.state = 'won';
+                result.shape = (sum == 3) ? 'Circle' : 'Cross';
                 result.direction = condition;
                 return result;
             }
         }
+
+        //TODO: check if no winner
+
         return result;
     };
 
@@ -112,6 +115,9 @@ let game = (function() {
 
         let result = board.check();
         console.log(result)
+        if (result.state === 'won') {
+            resultsNode.textContent = `${result.shape} has won!`;
+        }
     }
 
     let reset = function() {
@@ -119,6 +125,7 @@ let game = (function() {
         currentTurn = 'circle';
         updateTurn();
         updateGameMode('standby');
+        resultsNode.textContent = ``;
     }
     return {clickSlot, reset, updateGameMode};
 })();
@@ -134,6 +141,8 @@ onePlayerButtonNode.addEventListener('click', () => {
 twoPlayerButtonNode.addEventListener('click', () => {
     game.updateGameMode('two-player');
 });
+
+const resultsNode = document.getElementById('results');
 
 const slotNodeList = document.querySelectorAll('.slot');
 [...slotNodeList].forEach((slotNode) => {
