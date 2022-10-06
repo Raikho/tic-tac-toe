@@ -93,33 +93,37 @@ let board = (function() {
 
 let game = (function() {
 
-    let currentTurn = 'circle';
+    let currentTurn = 'none';
     let gameMode = 'standby';
 
+    let toggleTurn = function() {
+        if (currentTurn === 'circle') currentTurn = 'cross';
+        else if (currentTurn === 'cross') currentTurn = 'circle';
+        updateTurn();
+    };
+
     let updateTurn = function() {
-        if (currentTurn === 'circle') {
-            crossTurnNode.classList.remove('active');
+        circleTurnNode.classList.remove('active');
+        crossTurnNode.classList.remove('active');
+        if (currentTurn === 'circle')
             circleTurnNode.classList.add('active');
-        } else {
+        if (currentTurn === 'cross')
             crossTurnNode.classList.add('active');
-            circleTurnNode.classList.remove('active');
-        }
     }
 
     let updateGameMode = function(mode) {
         gameMode = mode;
         onePlayerButtonNode.classList.remove('active');
         twoPlayerButtonNode.classList.remove('active');
-        if (gameMode === 'one-player')
+        if (gameMode === 'one-player') {
             onePlayerButtonNode.classList.add('active');
-        if (gameMode === 'two-player')
+        }
+        if (gameMode === 'two-player') {
             twoPlayerButtonNode.classList.add('active');
+            currentTurn = 'circle';
+            updateTurn();
+        }
     }
-
-    let toggleTurn = function() {
-        currentTurn = (currentTurn === 'circle') ? 'cross' : 'circle';
-        updateTurn();
-    };
 
     let clickSlot = function(row, col) {
         board.add(row, col, currentTurn);
@@ -135,7 +139,7 @@ let game = (function() {
 
     let reset = function() {
         board.reset();
-        currentTurn = 'circle';
+        currentTurn = 'none';
         updateTurn();
         updateGameMode('standby');
         resultsNode.textContent = ``;
