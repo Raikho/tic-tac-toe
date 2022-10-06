@@ -117,16 +117,26 @@ let game = (function() {
         twoPlayerButtonNode.classList.remove('active');
         if (gameMode === 'one-player') {
             onePlayerButtonNode.classList.add('active');
+            twoPlayerButtonNode.classList.add('inactive');
             boardNode.classList.add('active');
+            resetButtonNode.classList.remove('inactive');;
+            resultsNode.textContent = 'Playing vs AI';
         }
         if (gameMode === 'two-player') {
             twoPlayerButtonNode.classList.add('active');
+            onePlayerButtonNode.classList.add('inactive');
             currentTurn = 'circle';
             boardNode.classList.add('active');
+            resetButtonNode.classList.remove('inactive');;
+            resultsNode.textContent = 'Playing locally';
             updateTurn();
         }
         if (gameMode === 'standby') {
             boardNode.classList.remove('active');
+            resetButtonNode.classList.add('inactive');
+            onePlayerButtonNode.classList.remove('inactive');
+            twoPlayerButtonNode.classList.remove('inactive');
+            resultsNode.textContent = 'Select a game mode';
         }
     }
 
@@ -163,12 +173,14 @@ const crossTurnNode = document.querySelector('.cross-turn');
 
 const onePlayerButtonNode = document.getElementById('one-player');
 const twoPlayerButtonNode = document.getElementById('two-player');
+const resetButtonNode = document.getElementById('reset');
 onePlayerButtonNode.addEventListener('click', () => {
     game.updateGameMode('one-player');
 });
 twoPlayerButtonNode.addEventListener('click', () => {
     game.updateGameMode('two-player');
 });
+resetButtonNode.addEventListener("click", game.reset);
 
 const resultsNode = document.getElementById('results');
 
@@ -180,8 +192,6 @@ const slotNodeList = document.querySelectorAll('.slot');
 });
 const boardNode = document.querySelector('.container.board');
 
-const resetButtonNode = document.getElementById('reset');
-resetButtonNode.addEventListener("click", game.reset);
 
 console.log('board:', board);
 console.log('game:', game);

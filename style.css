@@ -8,6 +8,7 @@
     --accent1: #f59e0b;
     --accent2: #38bdf8;
     --accent2-dark: #0c4a6e;
+    --accent2-alpha: #38bdf8;
     --foreground: var(--accent2-dark);
 }
 
@@ -59,6 +60,8 @@ button {
     border-radius: 5px;
 }
 button:hover {filter: brightness(1.05);}
+button.inactive {filter: opacity(40%);}
+button.inactive:hover {filter: opacity(40%)}
 
 button#reset {
     grid-area: reset;
@@ -132,8 +135,8 @@ button.game-mode.active {
 }
 
 .container.board {
-    width: 80vmin;
-    height: 80vmin;
+    width: calc(80vmin - 200px);
+    height: calc(80vmin - 200px);
     background-color: var(--gray);
     box-shadow: 8px 8px 16px #0003;
     border-radius: 5px;
