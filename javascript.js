@@ -14,7 +14,7 @@ let board = (function() {
         return full;
     })();
 
-    let winConditions = {
+    const winConditions = {
         row1: [[0,0], [0,1], [0,2]],
         row2: [[1,0], [1,1], [1,2]],
         row3: [[2,0], [2,1], [2,2]],
@@ -55,6 +55,8 @@ let board = (function() {
             shape: null,
             direction: null
         }
+
+        // Check for win
         for (let condition in winConditions) {
             let sum = 0;
             for (let i=0; i<3; i++) {
@@ -71,7 +73,17 @@ let board = (function() {
             }
         }
 
-        //TODO: check if no winner
+        // Check for stalemate
+        let sum = 0;
+        for (let row of array) {
+            for (let slot of row) {
+                sum += Math.abs(toNumber(slot.value));
+            }
+        }
+        if (sum === 9) {
+            result.state = 'tie';
+            return result;
+        }
 
         return result;
     };
@@ -115,9 +127,10 @@ let game = (function() {
 
         let result = board.check();
         console.log(result)
-        if (result.state === 'won') {
+        if (result.state === 'won')
             resultsNode.textContent = `${result.shape} has won!`;
-        }
+        else if (result.state === 'tie')
+            resultsNode.textContent = `You have tied!`
     }
 
     let reset = function() {
