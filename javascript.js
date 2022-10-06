@@ -295,3 +295,35 @@ const boardNode = document.querySelector('.container.board');
 
 console.log('board:', board);
 console.log('game:', game);
+
+const Slot = (row, col) => {
+
+    const obj = {
+        
+    }
+    
+    obj.row = row;
+    obj.col = col;
+    obj.token = 'empty';
+    obj.num = 0;
+    obj.node = document.querySelector(`.slot[data-row="${row}"][data-col="${col}"]`);
+
+    obj.setToken = function(token) {
+        this.token = token;
+        this.node.dataset.value = token;
+        this.updateNum();
+    }
+
+    obj.updateNum = function() {
+        if (this.token === 'empty') this.num = 0;
+        else if (this.token === 'circle') this.num = 1;
+        else if (this.token === 'cross') this.num = -1;
+    }
+
+    return obj;
+}
+
+const slot = Slot(2, 2);
+console.log(slot);
+slot.setToken('cross');
+console.log(slot);
