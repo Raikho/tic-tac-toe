@@ -191,3 +191,4 @@ div.turn-order.title {
     background-color: var(--white-alpha2);
     box-shadow: inset 2px 2px 4px #0003;
 }
+.slot.highlight[data-active="true"] {background-color: var(--accent1-alpha);}
