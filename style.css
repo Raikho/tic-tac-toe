@@ -5,6 +5,7 @@
     --white-alpha2: #fff5;
     --black: #000;
     --gray: lightslategray;
+    --gray-alpha: #77889944;
     --accent1: #f59e0b;
     --accent1-alpha: #f59e0b88;
     --accent2: #38bdf8;
@@ -20,8 +21,10 @@
 body {
     font-family: Verdana, Geneva, Tahoma, sans-serif;
     font-size: 16px;
-    background-color: var(--offwhite);
+    font-weight: 700;
     color: var(--foreground);
+    background-color: var(--offwhite);
+    text-align: center;
 
     width: 100vw;
     height: 100vh;
@@ -37,33 +40,113 @@ body {
     gap: 20px;
 }
 
-/* ============================ CONTROLS ============================ */
-/* ================================================================== */
-.container.controls {
-    width: 20vmax;
-    height: 30vmax;
-    border: 2px dashed orange;
+/*============================ DEFAULTS ===========================*/
+/*=================================================================*/
+/* .container {border: 2px dashed #ff000088;} */
+/* .container div {border: 2px dashed #9acd3288;} */
+/* .container div.container {border: 2px dashed #ffa50088;} */
 
+/*================== CONTAINER ==================*/
+.container {border-radius: 5px;}
+.container div {width: 100%; height: 100%;}
+.container.flex {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 3px; /*temp*/
+    padding: 3px; /*temp*/
+}
+.container.grid {
     display: grid;
-    grid-template-rows: repeat(4, 1fr);
+    justify-items: center;
+    align-items: center;
+    gap: 3px; /*temp*/
+    padding: 3px; /*temp*/
 }
-.controls>.container {border: 2px dashed red;}
-
-.container.reset {
-    border: 2px dashed red;
-}
-.container.one-player {
-
-}
-.container.two-player {
-
-}
-.container.results {
-
+.container.grid.r4c1 {grid-template-rows: max-content 1fr 1fr 20%;}
+.container.grid.r1c2 {grid-template-columns: 1fr 1fr;}
+.container.grid.r2c2 {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 2fr 3fr;
+    gap: 5px;
 }
 
-/* ============================= BOARD ============================== */
-/* ================================================================== */
+/*=================== BUTTONS ===================*/
+button {
+    font-weight: 700;
+    color: var(--white);
+    background-color: var(--accent2);
+    border-radius: 5px;
+    box-shadow: inset 4px 4px 4px #0003;
+}
+button.big {
+    width: 120px;
+    height: 40px;
+    font-size: 20px;
+}
+button.small {
+    width: 80px;
+    height: 30px;
+    font-size: 12px;
+}
+
+/*==================== EXTRA ====================*/
+.inset-bg {
+    background-color: var(--white-alpha);
+    box-shadow: inset 4px 4px 8px #0003;
+    padding: 5px;
+}
+.card {
+    background-color: var(--white-alpha);
+    border-radius: 5px;
+    box-shadow: 6px 6px 6px #0003;
+}
+/* .card.inactive {box-shadow: 3px 3px 3px #0003;} */
+[data-active="false"] {filter: opacity(50%);}
+
+/*============================ CONTROLS ===========================*/
+/*=================================================================*/
+.controls.container {
+    width: max(200px, 20vmax);
+    height: max(300px, 30vmax);
+    width: 220px;
+    height: 330px;
+    background-color: var(--gray);
+    box-shadow: 8px 8px 16px #0003;
+    padding: 15px;
+    gap: 10px;
+}
+
+/*==================== RESET ====================*/
+
+/*================== ONE PLAYER =================*/
+
+/*================== TWO PLAYER =================*/
+div.turn-order.title {
+    grid-column: span 2;
+    font-size: 14px;
+    width: min-content;
+    height: min-content;
+    padding: 3px;
+    border-radius: 3px;
+}
+.turn-order.card {
+    font-size: 30px;
+    font-weight: 400;
+    color: var(--accent2);
+}
+
+/*=================== RESULTS ===================*/
+.results.container {
+    border-radius: 5px;
+}
+#results {
+    height: auto;
+    padding: 5px;
+}
+
+/*============================= BOARD =============================*/
+/*=================================================================*/
 .container.board {
     width: 40vmax;
     height: 40vmax;

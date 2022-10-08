@@ -7,11 +7,24 @@
     <title>Tic Tac Toe</title>
 </head>
 <body>
-    <div class="container controls">
-        <div class="container reset"></div>
-        <div class="container one-player"></div>
-        <div class="container two-player"></div>
-        <div class="container results"></div>
+    <div class="controls container grid r4c1">
+        <div class="reset container flex">
+            <button id="reset" class="big" data-active="false">Reset</button>
+        </div>
+        <div class="one-player container grid r1c2">
+            <button id="one-player" class="small" data-active="true">1P vs AI</button>
+        </div>
+        <div class="two-player container grid r1c2">
+            <button id="two-player" class="small" data-active="true">2P Local</button>
+            <div class="turn-order container grid r2c2">
+                <div class="turn-order title inset-bg" data-active="false">Turn:</div>
+                <div class="turn-order card circle" data-active="false">O</div>
+                <div class="turn-order card" data-active="false">X</div>
+            </div>
+        </div>
+        <div class="results container flex inset-bg">
+            <div id="results">Select a game mode</div>
+        </div>
     </div>
 
     <div class="container board"></div>
