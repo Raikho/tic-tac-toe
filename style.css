@@ -10,7 +10,7 @@
     --accent1-alpha: #f59e0b88;
     --accent2: #38bdf8;
     --accent2-dark: #0c4a6e;
-    --accent2-alpha: #38bdf8;
+    --accent2-alpha: #38bdf888;
     --foreground: var(--accent2-dark);
 }
 
@@ -64,11 +64,24 @@ body {
     padding: 3px; /*temp*/
 }
 .container.grid.r4c1 {grid-template-rows: max-content 1fr 1fr 20%;}
-.container.grid.r1c2 {grid-template-columns: 1fr 1fr;}
+.container.grid.r1c2 {
+    grid-template-columns: 40% 1fr;
+    gap: 10px;
+}
 .container.grid.r2c2 {
     grid-template-columns: 1fr 1fr;
     grid-template-rows: 2fr 3fr;
     gap: 5px;
+}
+.container.grid.r2c3 {
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 0px;
+    font-size: 0;
+}
+.container.grid.r3c3 {
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
 }
 
 /*=================== BUTTONS ===================*/
@@ -84,16 +97,27 @@ button.big {
     height: 40px;
     font-size: 20px;
 }
-button.small {
+button.medium {
     width: 80px;
     height: 30px;
     font-size: 12px;
 }
+button.small {
+    width: auto;
+    height: 25px;
+    font-size: 8px;
+    padding-top: 3px;
+    padding-bottom: 3px;
+}
+button:hover {filter: brightness(1.05);}
+button[data-active="false"]:hover {filter: opacity(40%);}
+button[data-selected="true"] {border: 2px solid gold;}
 
 /*==================== EXTRA ====================*/
 .inset-bg {
     background-color: var(--white-alpha);
     box-shadow: inset 4px 4px 8px #0003;
+    border-radius: 5px;
     padding: 5px;
 }
 .card {
@@ -102,15 +126,15 @@ button.small {
     box-shadow: 6px 6px 6px #0003;
 }
 /* .card.inactive {box-shadow: 3px 3px 3px #0003;} */
-[data-active="false"] {filter: opacity(50%);}
+[data-active="false"] {filter: opacity(40%);}
 
 /*============================ CONTROLS ===========================*/
 /*=================================================================*/
 .controls.container {
     width: max(200px, 20vmax);
     height: max(300px, 30vmax);
-    width: 220px;
-    height: 330px;
+    width: 240px;
+    height: 360px;
     background-color: var(--gray);
     box-shadow: 8px 8px 16px #0003;
     padding: 15px;
@@ -120,6 +144,15 @@ button.small {
 /*==================== RESET ====================*/
 
 /*================== ONE PLAYER =================*/
+div.difficulty.title {
+    grid-column: span 3;
+    font-size: 10px;
+    font-weight: 700;
+    width: min-content;
+    height: min-content;
+    padding: 5px;
+    border-radius: 3px;
+}
 
 /*================== TWO PLAYER =================*/
 div.turn-order.title {
@@ -127,11 +160,11 @@ div.turn-order.title {
     font-size: 14px;
     width: min-content;
     height: min-content;
-    padding: 3px;
+    padding: 5px;
     border-radius: 3px;
 }
 .turn-order.card {
-    font-size: 30px;
+    font-size: 36px;
     font-weight: 400;
     color: var(--accent2);
 }
@@ -150,5 +183,19 @@ div.turn-order.title {
 .container.board {
     width: 40vmax;
     height: 40vmax;
-    border: 2px dashed blue;
+    background-color: var(--gray);
+    box-shadow: 8px 8px 16px #0003;
+
+    padding: 2vmax;
+    gap: 2vmax;
+}
+.slot {background-color: var(--white-alpha);}
+.slot>div.shape {filter: invert(81%) sepia(34%) saturate(6757%) hue-rotate(358deg) brightness(99%) contrast(94%) drop-shadow(4px 4px 5px #0004);}
+.slot[data-token="circle"]>div.shape {content: url(img/circle.svg);}
+.slot[data-token="cross"]>div.shape {content: url(img/cross.svg);}
+.slot:hover {outline: 2px double var(--accent1);}
+.slot[data-active="false"] {
+    filter: opacity(75%);
+    background-color: var(--white-alpha2);
+    box-shadow: inset 2px 2px 4px #0003;
 }

@@ -12,14 +12,20 @@
             <button id="reset" class="big" data-active="false">Reset</button>
         </div>
         <div class="one-player container grid r1c2">
-            <button id="one-player" class="small" data-active="true">1P vs AI</button>
+            <button id="one-player" class="medium" data-active="true" data-selected="false">1P vs AI</button>
+            <div class="difficulty container grid r2c3">
+                <div class="difficulty title inset-bg" data-active="false">Difficulty:</div>
+                <button class="small" data-active="true" data-selected="false">Easy</button>
+                <button class="small" data-active="false" data-selected="false">Med</button>
+                <button class="small" data-active="false" data-selected="false">Hard</button>
+            </div>
         </div>
         <div class="two-player container grid r1c2">
-            <button id="two-player" class="small" data-active="true">2P Local</button>
+            <button id="two-player" class="medium" data-active="true" data-selected="false">2P Local</button>
             <div class="turn-order container grid r2c2">
                 <div class="turn-order title inset-bg" data-active="false">Turn:</div>
                 <div class="turn-order card circle" data-active="false">O</div>
-                <div class="turn-order card" data-active="false">X</div>
+                <div class="turn-order card cross" data-active="false">X</div>
             </div>
         </div>
         <div class="results container flex inset-bg">
@@ -27,6 +33,16 @@
         </div>
     </div>
 
-    <div class="container board"></div>
+    <div class="board container grid r3c3">
+        <div class="slot inset-bg" data-token="empty" data-active="false" data-col="0" data-row="0"><div class="shape"></div></div>
+        <div class="slot inset-bg" data-token="empty" data-active="false" data-col="1" data-row="0"><div class="shape"></div></div>
+        <div class="slot inset-bg" data-token="empty" data-active="false" data-col="2" data-row="0"><div class="shape"></div></div>
+        <div class="slot inset-bg" data-token="empty" data-active="false" data-col="0" data-row="1"><div class="shape"></div></div>
+        <div class="slot inset-bg" data-token="empty" data-active="false" data-col="1" data-row="1"><div class="shape"></div></div>
+        <div class="slot inset-bg" data-token="empty" data-active="false" data-col="2" data-row="1"><div class="shape"></div></div>
+        <div class="slot inset-bg" data-token="empty" data-active="true" data-col="0" data-row="2"><div class="shape"></div></div>
+        <div class="slot inset-bg" data-token="cross" data-active="true" data-col="1" data-row="2"><div class="shape"></div></div>
+        <div class="slot inset-bg" data-token="circle" data-active="true" data-col="2" data-row="2"><div class="shape"></div></div>
+    </div>
 </body>
 </html>
