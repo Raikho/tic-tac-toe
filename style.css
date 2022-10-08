@@ -13,6 +13,10 @@
     --foreground: var(--accent2-dark);
 }
 
+* {
+    box-sizing: border-box;
+}
+
 body {
     font-family: Verdana, Geneva, Tahoma, sans-serif;
     font-size: 16px;
@@ -22,163 +26,46 @@ body {
     width: 100vw;
     height: 100vh;
     margin: 0;
+    box-sizing: border-box;
 
     display: flex;
+    flex-direction: column;
     flex-wrap: wrap;
     justify-content: center;
+    align-content: center;
     align-items: center;
     gap: 20px;
 }
 
+/* ============================ CONTROLS ============================ */
+/* ================================================================== */
 .container.controls {
-    width: 200px;
-    height: 300px;
-    background-color: var(--gray);
+    width: 20vmax;
+    height: 30vmax;
+    border: 2px dashed orange;
 
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: 1fr 1fr 1fr 1fr;
-    grid-template-areas:
-        "reset reset"
-        "two-player turn-order"
-        "one-player ."
-        "results results";
+    grid-template-rows: repeat(4, 1fr);
+}
+.controls>.container {border: 2px dashed red;}
 
-    gap: 10px;
-    padding: 20px;
-    border-radius: 5px;
-    box-shadow: 8px 8px 16px #0003;
-    align-items: center;
+.container.reset {
+    border: 2px dashed red;
 }
-/* .controls>* {border: 2px dashed orange;} */
+.container.one-player {
 
-button {
-    color: var(--white);
-    background-color: var(--accent2);
-    font-size: 20px;
-    font-weight: 700;
-    box-shadow: inset 4px 4px 4px #0003;
-    border-radius: 5px;
 }
-button:hover {filter: brightness(1.05);}
-button.inactive {filter: opacity(40%);}
-button.inactive:hover {filter: opacity(40%)}
+.container.two-player {
 
-button#reset {
-    grid-area: reset;
-    margin: 20px;
-    padding: 10px 20px;
 }
-button.game-mode {
-    align-self: center;
-    font-size: 14px;
-    padding: 5px 10px;
-}
-button.game-mode.active {
-    border: 2px solid gold;
-}
-
-.container.turn-order {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: 1fr min-content;
-
-    justify-items: center;
-    align-items: center;
-    gap: 5px;
-    padding: 5px;
-}
-/* .container.turn-order>* {border: 2px dashed coral;} */
-.turn-order>.title {
-    grid-column: 1 / 3;
-    font-weight: 700;
-    background-color: var(--white-alpha2);
-    border-radius: 3px;
-    box-shadow: inset 2px 2px 4px #0003;
-    padding: 2px 4px;
-}
-#two-player.active + .turn-order>.title {background-color: var(--white-alpha);}
-.circle-turn,
-.cross-turn {
-    width: 100%;
-    text-align: center;
-    font-size: 32px;
-    color: var(--accent2);
-    background-color: var(--white-alpha);
-    border-radius: 5px;
-    box-shadow: 2px 2px 2px #0003;
-    filter: opacity(50%);
-}
-.circle-turn.active,
-.cross-turn.active {
-    filter: opacity(100%);
-    box-shadow: 4px 4px 4px #0003;
-}
-
 .container.results {
-    grid-area: results;
 
-    height: 100%;
-    width: 100%;
-    background-color: var(--white-alpha);
-    border-radius: 5px;
-    box-shadow: inset 4px 4px 8px #0003;
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-#results {
-    color: var(--foreground);
-    font-weight: 700;
-    font-size: 16px;
-    text-align: center;
-    padding: 5px;
 }
 
+/* ============================= BOARD ============================== */
+/* ================================================================== */
 .container.board {
-    width: calc(80vmin - 200px);
-    height: calc(80vmin - 200px);
-    background-color: var(--gray);
-    box-shadow: 8px 8px 16px #0003;
-    border-radius: 5px;
-    padding: 20px;
-
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    grid-template-rows: 1fr 1fr 1fr;
-    gap: 20px;
-}
-
-.slot {
-    background-color: var(--white-alpha2);
-    box-shadow: inset 2px 2px 4px #0003;
-    border-radius: 5px;
-
-    text-align: center;
-    vertical-align: middle;
-}
-
-.slot:hover {
-    outline: 2px double var(--accent1);
-}
-
-.slot[data-value="circle"]>div.shape {
-    height: 100%;
-    content: url(img/circle.svg);
-    filter: invert(81%) sepia(34%) saturate(6757%) hue-rotate(358deg) brightness(99%) contrast(94%) drop-shadow(4px 4px 5px #0004);
-}
-.slot[data-value="cross"]>div.shape {
-    height: 100%;
-    content: url(img/cross.svg);
-    filter: invert(81%) sepia(34%) saturate(6757%) hue-rotate(358deg) brightness(99%) contrast(94%) drop-shadow(4px 4px 5px #0004);
-}
-
-.board.active>.slot {
-    background-color: var(--white-alpha);
-    box-shadow: inset 4px 4px 8px #0003;
-}
-
-.board.active>.slot.highlight {
-    background-color: var(--accent1-alpha);
+    width: 40vmax;
+    height: 40vmax;
+    border: 2px dashed blue;
 }
