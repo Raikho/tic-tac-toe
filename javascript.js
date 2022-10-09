@@ -20,7 +20,6 @@ const Slot = (x, y) => {
         this.token = 'empty';
         this.node.classList.remove('highlight');
     };
-
     return obj;
 };
 
@@ -52,23 +51,35 @@ let board = (function () {
             sum += this[x][y].num;
         return sum;
     }
+    slots.hasToken = function(condition, token) {
+        for (let [x,y] of this.winConditions[condition])
+            if (this[x][y].token === token)
+                return true;
+        return false;
+    }
+    slots.getEmpty = function(condition) {
+        for ([x,y] of this.winConditions[condition]) {
+            if (this[x][y].token === 'empty')
+                return [x,y];
+        }
+    }
     slots.isFull = function() {
         for (let slot of this.flat())
             if (slot.num === 0) return false;
         return true;
     }
 
-    let addToken = function (x, y, token) {
+    const addToken = function(x, y, token) {
         if (slots[x][y].token === 'empty')
             slots[x][y].token = token;
     };
 
-    let clear = function() {
+    const clear = function() {
         for (let slot of slots.flat())
             slot.clear();
     }
 
-    let Result = function (state, score, condition) {
+    const Result = function(state, score, condition) {
         let out = {};
         out.state = (state || 'noWinner');
         out.shape = null;
@@ -80,7 +91,7 @@ let board = (function () {
         return out;
     }
 
-    let check = function () {
+    const check = function() {
         for (let condition in slots.winConditions) {
             let score = slots.sumCondition(condition);
             if (Math.abs(score) == 3) {
@@ -95,99 +106,80 @@ let board = (function () {
         return Result();
     };
 
-    let generateMove = function (token) {
+    const generateMove = function(token) {
         let oppositeToken = (token === 'circle') ? 'cross' : 'circle';
 
-        // Get immediate moves to win or prevent losing
-        let immediateMoves = { circle: [], cross: []};
-        for (let condition in winConditions) {
-            let numCircle = 0;
-            let numCross = 0;
-            let lastEmptySlot = null;
-
-            for (let [row, col] of winConditions[condition]) {
-                let slot = array[row][col];
-                if (slot.token === 'circle') numCircle++;
-                else if (slot.token === 'cross') numCross++;
-                else if (slot.token === 'empty') lastEmptySlot = slot;
-            }
-
-            if (numCircle === 2 && lastEmptySlot)
-                immediateMoves.circle.push(lastEmptySlot);
-            else if (numCross === 2 && lastEmptySlot)
-                immediateMoves.cross.push(lastEmptySlot);
+        // Check for immediate winning moves
+        for (let condition in slots.winConditions) {
+            let score = slots.sumCondition(condition);
+            if (token === 'circle' && score == 2 || token === 'cross' && score == -2)
+                ;//return slots.getEmpty(condition);
         }
 
-        // Pick move if possible to win or prevent losing
-        if (immediateMoves[token].length)
-            return {row: immediateMoves[token][0].row, col: immediateMoves[token][0].col};
-        if (immediateMoves[oppositeToken].length)
-            return {row: immediateMoves[oppositeToken][0].row, col: immediateMoves[oppositeToken][0].col};
+        // Check for moves to block opponent from immediately winning
+        for (let condition in slots.winConditions) {
+            let score = slots.sumCondition(condition);
+            if (token === 'circle' && score == -2 || token === 'cross' && score == 2)
+                ;//return slots.getEmpty(condition);
+        }
 
-        // get possibleConditions still available to win
-        let possibleConditions = [];
-        for (let condition in winConditions) {
-            let possible = true;
-            for (let [row, col] of winConditions[condition])
-                if (array[row][col].token === 'circle')
-                    possible = false;
-            if (possible)
+        // Get possibleConditions still available to win
+        const possibleConditions = [];
+        for (let condition in slots.winConditions)
+            if (!slots.hasToken(condition, oppositeToken))
                 possibleConditions.push(condition);
-        }
+        console.log(token, 'can still win at', possibleConditions); // LOG
 
-        // set each empty slot to frequency of at least once
-        let possibleMoves = [[], [], []];
-        for (let i=0; i<3; i++) {
-            for (let j=0; j<3; j++) {
-                let obj = {};
-                obj.slot = array[i][j];
-                obj.frequency = (obj.slot.token === 'empty') ? 1 : 0;
-                possibleMoves[i].push(obj);
+        // Get possible moves, giving each empty slot at least 1 frequency
+        const possibleMoves = [[{},{},{}], [{},{},{}], [{},{},{}]];
+        for (let x=0; x<3; x++) {
+            for (let y=0; y<3; y++) {
+                possibleMoves[x][y].frequency = (slots[x][y].token === 'empty') ? 1 : 0;
+                possibleMoves[x][y].x = x;
+                possibleMoves[x][y].y = y;
             }
         }
 
-        // Add empty slots again for each win condition they are in
-        for (let condition of possibleConditions) {
-            for (let [row, col] of winConditions[condition]) {
-                if (possibleMoves[row][col].slot.token === 'empty')
-                    possibleMoves[row][col].frequency += 1;
-            }
-        }
+        // Increase each move's frequency for each win condition they are in
+        for (let condition of possibleConditions)
+            for (let [x,y] of slots.winConditions[condition])
+                if (slots[x][y].token === 'empty')
+                    possibleMoves[x][y].frequency++;
 
-        // Get max frequency of possible moves
-        let maxFrequency = 0;
-        for (move of possibleMoves.flat())
-            if (move.frequency > maxFrequency)
-                maxFrequency = move.frequency;
-
-        // Filter only max values;
-        maxFrequencyMoves =  possibleMoves.flat().filter((move) => {
-            return (move.frequency === maxFrequency);
+        // FIlter only moves with max frequency
+        let maxFrequency = possibleMoves.flat().reduce((prev, move) => {
+            return (move.frequency > prev) ? move.frequency : prev;
+        }, 0);
+        const bestMoves = possibleMoves.flat().filter((move) => {
+            return (move.frequency === maxFrequency)
         });
 
-        // Pick a move;
-        let num = Math.floor(Math.random() * maxFrequencyMoves.length);
-        return {row: maxFrequencyMoves[num].slot.row, col: maxFrequencyMoves[num].slot.col};
-    };
+        // Pick a move
+        let num = Math.floor(Math.random() * bestMoves.length);
+        return [bestMoves[num].x, bestMoves[num].y];
+    }
 
-    return {addToken, clear, check, slots};
+    return {addToken, clear, check, generateMove, slots};
 })();
 
 // board.addToken(1, 0, 'cross')
-board.addToken(0, 0, 'cross');
-board.addToken(1, 0, 'circle');
+board.addToken(0, 0, 'empty');
+board.addToken(1, 0, 'empty');
 board.addToken(2, 0, 'cross');
 board.addToken(0, 1, 'cross');
 board.addToken(1, 1, 'circle');
 board.addToken(2, 1, 'cross');
 board.addToken(0, 2, 'circle');
-board.addToken(1, 2, 'cross');
-board.addToken(2, 2, 'empty');
-console.log('diagonal1', board.slots.sumCondition('diagonal1'));
-console.log('col2', board.slots.sumCondition('col2'));
-console.log('checking...');
-console.log(board.check());
-console.log('full: ', board.slots.isFull());
+board.addToken(1, 2, 'empty');
+board.addToken(2, 2, 'circle');
+// console.log('diagonal1', board.slots.sumCondition('diagonal1'));
+// console.log('col2', board.slots.sumCondition('col2'));
+// console.log('checking...');
+// console.log(board.check());
+let token = 'cross';
+console.log('generating move for', token, '...');
+[x,y] = board.generateMove(token);
+console.log(`move for ${token} generated at x:${x}, y:${y}`);
 // board.array[2][2].highlight();
 // board.clear();
 
