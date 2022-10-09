@@ -1,5 +1,5 @@
 const Slot = (x, y) => {
-    const obj = {}
+    const obj = {};
     obj.x = x;
     obj.y = y;
     obj.num = 0;
@@ -174,89 +174,89 @@ let token = 'cross';
 [x,y] = board.generateMove(token);
 console.log(`move for ${token} generated at x:${x}, y:${y}`);
 
+const Node = (name) => {
+    const obj = {};
+    obj.name = name;
+    obj.node = document.getElementById(name);
+    Object.defineProperty(obj, 'active', {
+        get() {
+            if (obj.node.dataset.active === 'true') return true;
+            return false;
+        },
+        set(bool) {
+            if (bool) obj.node.dataset.active = 'true';
+            else obj.node.dataset.active = 'false';
+        },
+    })
+    obj.addListener = function(callback) {
+        this.node.addEventListener('click', () => callback(obj));
+    };
+    return obj;
+};
 
 let game = (function(){
+
     let state = 'chooseMode';
+    let numPlayers = 0;
 
     let nodes = (function() {
         let obj = {};
-        obj.onePlayer = document.getElementById('one-player');
-        obj.twoPlayer = document.getElementById('two-player');
-        obj.reset = document.getElementById('reset');
-        Object.defineProperty(obj, 'results', {value: document.getElementById('results')});
-        Object.defineProperty(obj, 'groups', {
-            value: {
-                diff: {
-                    title: document.getElementById('diff-title'),
-                    easy: document.getElementById('diff-easy'),
-                    med: document.getElementById('diff-med'),
-                    hard: document.getElementById('diff-hard'),
-                },
-                turn: {
-                    title: document.getElementById('turn-title'),
-                    circle: document.getElementById('turn-circle'),
-                    cross: document.getElementById('turn-cross'),
-                },
-                slots: {value: document.querySelectorAll('.slot')},
-            },
-        });
+        obj.reset = Node('reset');
+        obj.onePlayer = Node('onePlayer');
+        obj.diffTitle = Node('diffTitle');
+        obj.diffEasy = Node('diffEasy');
+        obj.diffMed = Node('diffMed');
+        obj.diffHard = Node('diffHard')
+        obj.twoPlayer = Node('twoPlayer');
+        obj.turnTitle = Node('turnTitle');
+        obj.turnCircle = Node('turnCircle');
+        obj.turnCross = Node('turnCross');
+        obj.results = Node('results');
+        for (prop in obj)
+            obj[prop].addListener(onClick);
 
-        for (property in obj)
-            obj[property].addEventListener('click', onClick);
+        obj.activate = function() {
+            for (arg of arguments)
+                obj[arg].active = true;
+        }
+        obj.deactivate = function() {
+            for (arg of arguments)
+                obj[arg].active = false;
+        }
+        obj.deactivateAll = function() {
+            for (prop in obj)
+                obj[prop].active = false;
+        }
 
         return obj;
     })();
 
-    function onClick() {
-        console.log(`${this.id} was clicked`);
+    function onClick(node) {
+        if(!node.active) return;
+        switch (node.name) {
+            case 'onePlayer':
+                console.log('one player was clicked');
+                nodes.deactivate('twoPlayer');
+                nodes.activate('reset', 'diffTitle', 'diffEasy', 'diffMed', 'diffHard');
+                break;
+            case 'twoPlayer':
+                console.log('two player was clicked');
+                nodes.deactivate('onePlayer');
+                nodes.activate('reset', 'turnTitle', 'turnCircle', 'turnCross');
+                break;
+            case 'reset':
+                console.log('reset was clicked');
+                nodes.reset.active = false;
+                nodes.onePlayer.active = true;
+                nodes.twoPlayer.active = true;
+                nodes.deactivateAll();
+                nodes.activate('onePlayer', 'twoPlayer');
+                break;
+        }
+
     };
 
     return {state, nodes, onClick};
 })();
 
-console.log(game.nodes);
-
-
-// for (slot of document.querySelectorAll('.slot'))
-    // slot.addEventListener('click', onClick);
-
-// let game2 = (function() {
-//     let state = 'pickMode';
-
-//     let nodes = (function() {
-//         let obj = {};
-//         obj.onePlayer = document.getElementById('one-player');
-//         obj.twoPlayer = document.getElementById('two-player');
-//         obj.reset = document.getElementById('reset');
-//         obj.circleTurn = document.querySelector('.circle-turn');
-//         obj.crossTurn = document.querySelector('.cross-turn');
-//         obj.results = document.getElementById('results');
-//         let n = 1;
-//         for (slot of document.querySelectorAll('.slot')) {
-//             obj['node'+n] = slot;
-//             n++;
-//         }
-
-//         for (property in obj)
-//             obj[property].addEventListener('click', onClick);
-
-//         return obj;
-//     })();
-
-//     let isActive = function(node) {
-//         return !node.classList.contains('inactive');
-//     }
-//     let setInactive = function(node) {
-//         node.classList.add('inactive');
-//     }
-//     let setActive = function(node) {
-//         node.classList.remove('inactive');
-//     }
-
-//     function onClick() {
-//         console.log(`active: ${isActive(this)}, this was clicked:`, this);
-//         setInactive(this);
-//     };
-
-//     return {nodes, onClick};
-// })();
+// console.log(game.nodes);
