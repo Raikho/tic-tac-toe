@@ -113,14 +113,14 @@ let board = (function () {
         for (let condition in slots.winConditions) {
             let score = slots.sumCondition(condition);
             if (token === 'circle' && score == 2 || token === 'cross' && score == -2)
-                ;//return slots.getEmpty(condition);
+                return slots.getEmpty(condition);
         }
 
         // Check for moves to block opponent from immediately winning
         for (let condition in slots.winConditions) {
             let score = slots.sumCondition(condition);
             if (token === 'circle' && score == -2 || token === 'cross' && score == 2)
-                ;//return slots.getEmpty(condition);
+                return slots.getEmpty(condition);
         }
 
         // Get possibleConditions still available to win
@@ -128,7 +128,6 @@ let board = (function () {
         for (let condition in slots.winConditions)
             if (!slots.hasToken(condition, oppositeToken))
                 possibleConditions.push(condition);
-        console.log(token, 'can still win at', possibleConditions); // LOG
 
         // Get possible moves, giving each empty slot at least 1 frequency
         const possibleMoves = [[{},{},{}], [{},{},{}], [{},{},{}]];
@@ -159,10 +158,9 @@ let board = (function () {
         return [bestMoves[num].x, bestMoves[num].y];
     }
 
-    return {addToken, clear, check, generateMove, slots};
+    return {addToken, clear, check, generateMove};
 })();
 
-// board.addToken(1, 0, 'cross')
 board.addToken(0, 0, 'empty');
 board.addToken(1, 0, 'empty');
 board.addToken(2, 0, 'cross');
@@ -172,26 +170,51 @@ board.addToken(2, 1, 'cross');
 board.addToken(0, 2, 'circle');
 board.addToken(1, 2, 'empty');
 board.addToken(2, 2, 'circle');
-// console.log('diagonal1', board.slots.sumCondition('diagonal1'));
-// console.log('col2', board.slots.sumCondition('col2'));
-// console.log('checking...');
-// console.log(board.check());
 let token = 'cross';
-console.log('generating move for', token, '...');
 [x,y] = board.generateMove(token);
 console.log(`move for ${token} generated at x:${x}, y:${y}`);
-// board.array[2][2].highlight();
-// board.clear();
 
 
-// board2.addToken(1, 0, 'cross');
-// board2.addToken(1, 1, 'cross');
-// board2.addToken(1, 2, 'circle');
-// // board2.addToken(2, 2, 'circle');
-// board2.addToken(2, 0, 'cross');
-// board2.addToken(0,2,'circle');
-// console.log('result: ', board2.check());
-// console.log('place in:', board2.generateMove('circle'));
+let game = (function(){
+    let state = 'chooseMode';
+
+    let nodes = (function() {
+        let obj = {};
+        obj.onePlayer = document.getElementById('one-player');
+        obj.twoPlayer = document.getElementById('two-player');
+        obj.reset = document.getElementById('reset');
+        Object.defineProperty(obj, 'results', {value: document.getElementById('results')});
+        Object.defineProperty(obj, 'groups', {
+            value: {
+                diff: {
+                    title: document.getElementById('diff-title'),
+                    easy: document.getElementById('diff-easy'),
+                    med: document.getElementById('diff-med'),
+                    hard: document.getElementById('diff-hard'),
+                },
+                turn: {
+                    title: document.getElementById('turn-title'),
+                    circle: document.getElementById('turn-circle'),
+                    cross: document.getElementById('turn-cross'),
+                },
+                slots: {value: document.querySelectorAll('.slot')},
+            },
+        });
+
+        for (property in obj)
+            obj[property].addEventListener('click', onClick);
+
+        return obj;
+    })();
+
+    function onClick() {
+        console.log(`${this.id} was clicked`);
+    };
+
+    return {state, nodes, onClick};
+})();
+
+console.log(game.nodes);
 
 
 // for (slot of document.querySelectorAll('.slot'))
