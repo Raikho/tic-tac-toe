@@ -79,9 +79,9 @@ const board = (function () {
             slot.clear();
     }
 
-    const Result = function(state, score, condition) {
+    const Result = function(state='inProgress', score, condition) {
         let out = {};
-        out.state = (state || 'noWinner');
+        out.state = state;
         out.shape = null;
         out.direction = null;
         if (state === 'win') {
@@ -208,14 +208,15 @@ const Node = (name, isGroup=false, groupNode) => {
     return obj;
 };
 
-const Game = (type, p) => {
+const Game = (playerType1, tokenType1, playerType2, tokenType2) => {
     const obj = {};
+    obj.state = 'inProgress';
     obj.turn = 0;
     obj.players = [{}, {}];
-    obj.players[0].type = 'player';
-    obj.players[0].token = 'circle';
-    obj.players[1].type = 'player';
-    obj.players[1].token = 'cross';
+    obj.players[0].type = playerType1;
+    obj.players[0].token = tokenType1;
+    obj.players[1].type = playerType2;
+    obj.players[1].token = tokenType2;
     obj.nextTurn = function() {obj.turn = (obj.turn == 0) ? 1 : 0;};
     Object.defineProperty(obj, 'currentPlayer', {
         get() {return obj.players[obj.turn];},
@@ -274,9 +275,10 @@ const run = (function(){
             case 'twoPlayer':
                 nodes.deactivate('onePlayer');
                 nodes.activate('reset', 'turnTitle', 'turnCircle', 'turnCross', 'board');
-                game = Game();
+                game = Game('player', 'circle', 'player', 'cross');
                 break;
             case 'reset':
+                board.clear();
                 nodes.deactivateAll();
                 nodes.activate('onePlayer', 'twoPlayer');
                 break;
@@ -293,9 +295,11 @@ const run = (function(){
 
     function clickSlot(x, y) {
         console.log('game:', game);
-        if(!game) return;
+        if(game.state !== 'inProgress') return;
 
         board.addToken(x, y, game.token);
+        game.state = board.check().state;
+
         game.nextTurn();
     };
 
