@@ -213,10 +213,19 @@ const Game = (playerType1, tokenType1, playerType2, tokenType2) => {
     obj.state = 'inProgress';
     obj.turn = 0;
     obj.players = [{}, {}];
+
     obj.players[0].type = playerType1;
     obj.players[0].token = tokenType1;
+    obj.players[0].play = function(x, y) {
+        board.addToken(x, y, this.token);
+    };
+
     obj.players[1].type = playerType2;
     obj.players[1].token = tokenType2;
+    obj.players[1].play = function(x, y) {
+        board.addToken(x, y, this.token)
+    };
+
     obj.nextTurn = function() {obj.turn = (obj.turn == 0) ? 1 : 0;};
     Object.defineProperty(obj, 'currentPlayer', {
         get() {return obj.players[obj.turn];},
@@ -224,6 +233,12 @@ const Game = (playerType1, tokenType1, playerType2, tokenType2) => {
     Object.defineProperty(obj, 'token', {
         get() {return obj.currentPlayer.token;},
     });
+    obj.play = function(x, y) {
+        let player = obj.currentPlayer;
+        if (player.type === 'player') return [x, y];
+        else return board.generateMove(obj.currentPlayer.token);
+    };
+
     return obj;
 };
 
@@ -287,6 +302,7 @@ const run = (function(){
                 break;
             case 'diffEasy': case 'diffMed': case 'diffHard':
                 nodes.activate('board');
+                game = Game('player', 'circle', 'ai', 'cross');
                 break;
             case 'slots':
                 clickSlot(x, y);
@@ -312,13 +328,14 @@ const run = (function(){
     }
 
     function clickSlot(x, y) {
-        console.log('game:', game);
         if(game.state !== 'inProgress') return;
 
-        board.addToken(x, y, game.token);
+        [xNew, yNew] = game.play(x, y);
+
+        board.addToken(xNew, yNew, game.token);
+
         results = board.check();
         game.state = results.state;
-
         switch (game.state) {
             case 'inProgress':
                 flipTurnIndicator();
@@ -331,8 +348,18 @@ const run = (function(){
                 if (results.shape === 'circle')
                     updateResults('Cricle has won!');
                 else if (results.shape === 'cross')
-                    updateResults('Cross has won!`');
+                    updateResults('Cross has won!');
                 break;
+        }
+
+        if (game.state === 'inProgress' && game.currentPlayer.type === 'ai'){
+            console.log('do the second turn');
+            game.state = 'paused';
+            setTimeout(() => {
+                console.log('did the second turn');
+                game.state = 'inProgress';
+                clickSlot(x, y);
+            }, 500);
         }
     };
 
