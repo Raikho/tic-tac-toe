@@ -246,6 +246,7 @@ const run = (function(){
         obj.results = Node('results');
         obj.board = Node('board');
         obj.slots = Node('slots', true);
+        Object.defineProperty(obj, 'results', {enumerable: false});
         for (prop in obj)
             obj[prop].addListener(onClick);
 
@@ -274,13 +275,15 @@ const run = (function(){
                 break;
             case 'twoPlayer':
                 nodes.deactivate('onePlayer');
-                nodes.activate('reset', 'turnTitle', 'turnCircle', 'turnCross', 'board');
+                nodes.activate('reset', 'turnTitle', 'turnCircle', 'board');
                 game = Game('player', 'circle', 'player', 'cross');
+                updateResults();
                 break;
             case 'reset':
                 board.clear();
                 nodes.deactivateAll();
                 nodes.activate('onePlayer', 'twoPlayer');
+                updateResults('Select a game mode');
                 break;
             case 'diffEasy': case 'diffMed': case 'diffHard':
                 nodes.activate('board');
@@ -293,14 +296,44 @@ const run = (function(){
         }
     };
 
+    function flipTurnIndicator() {
+        if (game.turn == 0) {
+            nodes.deactivate('turnCircle');
+            nodes.activate('turnCross');
+        }
+        if (game.turn == 1) {
+            nodes.deactivate('turnCross');
+            nodes.activate('turnCircle');
+        }
+    }
+
+    function updateResults(text='') {
+        nodes.results.node.textContent = text;
+    }
+
     function clickSlot(x, y) {
         console.log('game:', game);
         if(game.state !== 'inProgress') return;
 
         board.addToken(x, y, game.token);
-        game.state = board.check().state;
+        results = board.check();
+        game.state = results.state;
 
-        game.nextTurn();
+        switch (game.state) {
+            case 'inProgress':
+                flipTurnIndicator();
+                game.nextTurn();
+                break;
+            case 'tie':
+                updateResults(`You have tied!`);
+                break;
+            case 'win':
+                if (results.shape === 'circle')
+                    updateResults('Cricle has won!');
+                else if (results.shape === 'cross')
+                    updateResults('Cross has won!`');
+                break;
+        }
     };
 
     return { nodes, onClick};
