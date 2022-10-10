@@ -23,7 +23,7 @@ const Slot = (x, y) => {
     return obj;
 };
 
-let board = (function () {
+const board = (function () {
 
     let slots = new Array(new Array(3), new Array(3), new Array(3));
     for (let x=0; x<3; x++)
@@ -208,11 +208,27 @@ const Node = (name, isGroup=false, groupNode) => {
     return obj;
 };
 
-let game = (function(){
+const Game = (type, p) => {
+    const obj = {};
+    obj.turn = 0;
+    obj.players = [{}, {}];
+    obj.players[0].type = 'player';
+    obj.players[0].token = 'circle';
+    obj.players[1].type = 'player';
+    obj.players[1].token = 'cross';
+    obj.nextTurn = function() {obj.turn = (obj.turn == 0) ? 1 : 0;};
+    Object.defineProperty(obj, 'currentPlayer', {
+        get() {return obj.players[obj.turn];},
+    });
+    Object.defineProperty(obj, 'token', {
+        get() {return obj.currentPlayer.token;},
+    });
+    return obj;
+};
 
-    let state = 'chooseMode';
-    let numPlayers = '';
-    let difficulty = '';
+const run = (function(){
+
+    let game = '';
 
     let nodes = (function() {
         let obj = {};
@@ -248,8 +264,6 @@ let game = (function(){
         return obj;
     })();
 
-    console.dir(nodes);
-
     function onClick(node, x, y) {
         if(!node.active) return;
         switch (node.name) {
@@ -260,6 +274,7 @@ let game = (function(){
             case 'twoPlayer':
                 nodes.deactivate('onePlayer');
                 nodes.activate('reset', 'turnTitle', 'turnCircle', 'turnCross', 'board');
+                game = Game();
                 break;
             case 'reset':
                 nodes.deactivateAll();
@@ -267,13 +282,22 @@ let game = (function(){
                 break;
             case 'diffEasy': case 'diffMed': case 'diffHard':
                 nodes.activate('board');
+                break;
+            case 'slots':
+                clickSlot(x, y);
+                break;
             default:
                 console.log(`${node.name} was clicked, with x:${x} and y:${y}`);
         }
-
     };
 
-    return {state, nodes, onClick};
-})();
+    function clickSlot(x, y) {
+        console.log('game:', game);
+        if(!game) return;
 
-// console.log(game.nodes);
+        board.addToken(x, y, game.token);
+        game.nextTurn();
+    };
+
+    return { nodes, onClick};
+})();
