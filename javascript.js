@@ -110,21 +110,23 @@ const board = (function () {
         return Result();
     };
 
-    const generateMove = function(token) {
+    const generateMove = function(token, difficulty) {
         let oppositeToken = (token === 'circle') ? 'cross' : 'circle';
 
-        // Check for immediate winning moves
-        for (let condition in slots.winConditions) {
-            let score = slots.sumCondition(condition);
-            if (token === 'circle' && score == 2 || token === 'cross' && score == -2)
-                return slots.getEmpty(condition);
-        }
+        if (difficulty >= 2) {
+            // Check for immediate winning moves
+            for (let condition in slots.winConditions) {
+                let score = slots.sumCondition(condition);
+                if (token === 'circle' && score == 2 || token === 'cross' && score == -2)
+                    return slots.getEmpty(condition);
+            }
 
-        // Check for moves to block opponent from immediately winning
-        for (let condition in slots.winConditions) {
-            let score = slots.sumCondition(condition);
-            if (token === 'circle' && score == -2 || token === 'cross' && score == 2)
-                return slots.getEmpty(condition);
+            // Check for moves to block opponent from immediately winning
+            for (let condition in slots.winConditions) {
+                let score = slots.sumCondition(condition);
+                if (token === 'circle' && score == -2 || token === 'cross' && score == 2)
+                    return slots.getEmpty(condition);
+            }
         }
 
         // Get possibleConditions still available to win
@@ -149,13 +151,26 @@ const board = (function () {
                 if (slots[x][y].token === 'empty')
                     possibleMoves[x][y].frequency++;
 
-        // FIlter only moves with max frequency
-        let maxFrequency = possibleMoves.flat().reduce((prev, move) => {
-            return (move.frequency > prev) ? move.frequency : prev;
-        }, 0);
-        const bestMoves = possibleMoves.flat().filter((move) => {
-            return (move.frequency === maxFrequency)
-        });
+        let bestMoves = [];
+        if (difficulty == 1) {
+            // Filter to moves with any frequency
+            bestMoves = possibleMoves.flat().filter((move) => {
+                return (move.frequency >= 1)
+            });
+        } else if (difficulty == 2) {
+            // Filter to moves weighted by frequency
+            for (let move of possibleMoves.flat())
+                for (let i=0; i<move.frequency; i++)
+                    bestMoves.push(move);
+        } else if (difficulty == 3) {
+            // FIlter only moves with max frequency
+            let maxFrequency = possibleMoves.flat().reduce((prev, move) => {
+                return (move.frequency > prev) ? move.frequency : prev;
+            }, 0);
+            bestMoves = possibleMoves.flat().filter((move) => {
+                return (move.frequency === maxFrequency)
+            });
+        }
 
         // Pick a move
         let num = Math.floor(Math.random() * bestMoves.length);
@@ -164,19 +179,6 @@ const board = (function () {
 
     return {addToken, isEmpty, clear, check, generateMove};
 })();
-
-// board.addToken(0, 0, 'empty');
-// board.addToken(1, 0, 'empty');
-// board.addToken(2, 0, 'cross');
-// board.addToken(0, 1, 'cross');
-// board.addToken(1, 1, 'circle');
-// board.addToken(2, 1, 'cross');
-// board.addToken(0, 2, 'circle');
-// board.addToken(1, 2, 'empty');
-// board.addToken(2, 2, 'circle');
-// let token = 'cross';
-// [x,y] = board.generateMove(token);
-// console.log(`move for ${token} generated at x:${x}, y:${y}`);
 
 const Node = (name, isGroup=false, groupNode) => {
     const obj = {};
@@ -216,11 +218,15 @@ const Game = (playerType1, tokenType1, playerType2, tokenType2, difficulty) => {
     const obj = {};
     obj.state = 'inProgress';
     obj.turn = 0;
+    obj.difficulty = 0;
+    switch (difficulty) {
+        case 'diffEasy': obj.difficulty = 1; break;
+        case 'diffMed': obj.difficulty = 2; break;
+        case 'diffHard': obj.difficulty = 3; break;
+    }
     obj.players = [{}, {}];
-
     obj.players[0].type = playerType1;
     obj.players[0].token = tokenType1;
-
     obj.players[1].type = playerType2;
     obj.players[1].token = tokenType2;
 
@@ -234,7 +240,7 @@ const Game = (playerType1, tokenType1, playerType2, tokenType2, difficulty) => {
     obj.play = function(x, y) {
         let player = obj.currentPlayer;
         if (player.type === 'player') return [x, y];
-        else return board.generateMove(obj.currentPlayer.token);
+        else return board.generateMove(obj.currentPlayer.token, obj.difficulty);
     };
 
     return obj;
@@ -359,10 +365,8 @@ const run = (function(){
         }
 
         if (game.state === 'inProgress' && game.currentPlayer.type === 'ai') {
-            console.log('do the second turn');
             game.state = 'paused';
             setTimeout(() => {
-                console.log('did the second turn');
                 game.state = 'inProgress';
                 clickSlot(x, y);
             }, 500);
