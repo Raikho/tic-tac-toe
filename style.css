@@ -122,7 +122,11 @@ button[data-selected="true"] {border: 2px solid gold;}
     box-shadow: 6px 6px 6px #0003;
 }
 /* .card.inactive {box-shadow: 3px 3px 3px #0003;} */
-[data-active="false"] {filter: opacity(40%);}
+[data-active="false"],
+.container[data-active="false"]>* {
+    filter: opacity(40%);
+}
+.container[data-active="false"] {filter: none;}
 
 /*============================ CONTROLS ===========================*/
 /*=================================================================*/

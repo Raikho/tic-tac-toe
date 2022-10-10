@@ -161,23 +161,26 @@ let board = (function () {
     return {addToken, clear, check, generateMove};
 })();
 
-board.addToken(0, 0, 'empty');
-board.addToken(1, 0, 'empty');
-board.addToken(2, 0, 'cross');
-board.addToken(0, 1, 'cross');
-board.addToken(1, 1, 'circle');
-board.addToken(2, 1, 'cross');
-board.addToken(0, 2, 'circle');
-board.addToken(1, 2, 'empty');
-board.addToken(2, 2, 'circle');
-let token = 'cross';
-[x,y] = board.generateMove(token);
-console.log(`move for ${token} generated at x:${x}, y:${y}`);
+// board.addToken(0, 0, 'empty');
+// board.addToken(1, 0, 'empty');
+// board.addToken(2, 0, 'cross');
+// board.addToken(0, 1, 'cross');
+// board.addToken(1, 1, 'circle');
+// board.addToken(2, 1, 'cross');
+// board.addToken(0, 2, 'circle');
+// board.addToken(1, 2, 'empty');
+// board.addToken(2, 2, 'circle');
+// let token = 'cross';
+// [x,y] = board.generateMove(token);
+// console.log(`move for ${token} generated at x:${x}, y:${y}`);
 
-const Node = (name) => {
+const Node = (name, isGroup=false, groupNode) => {
     const obj = {};
     obj.name = name;
-    obj.node = document.getElementById(name);
+    if (isGroup)
+        obj.node = document.getElementById('board');
+    else
+        obj.node = document.getElementById(name);
     Object.defineProperty(obj, 'active', {
         get() {
             if (obj.node.dataset.active === 'true') return true;
@@ -189,7 +192,18 @@ const Node = (name) => {
         },
     })
     obj.addListener = function(callback) {
-        this.node.addEventListener('click', () => callback(obj));
+        if (name === 'board') {
+            return;
+        } else if (isGroup) {
+            let nodeList = document.querySelectorAll('.slot');
+            for (let node of [...nodeList]) {
+                node.addEventListener('click', () => {
+                    callback(obj, node.dataset.col, node.dataset.row);
+                });
+            }
+        } else {
+            this.node.addEventListener('click', () => callback(obj));
+        }
     };
     return obj;
 };
@@ -197,7 +211,8 @@ const Node = (name) => {
 let game = (function(){
 
     let state = 'chooseMode';
-    let numPlayers = 0;
+    let numPlayers = '';
+    let difficulty = '';
 
     let nodes = (function() {
         let obj = {};
@@ -212,6 +227,8 @@ let game = (function(){
         obj.turnCircle = Node('turnCircle');
         obj.turnCross = Node('turnCross');
         obj.results = Node('results');
+        obj.board = Node('board');
+        obj.slots = Node('slots', true);
         for (prop in obj)
             obj[prop].addListener(onClick);
 
@@ -231,27 +248,27 @@ let game = (function(){
         return obj;
     })();
 
-    function onClick(node) {
+    console.dir(nodes);
+
+    function onClick(node, x, y) {
         if(!node.active) return;
         switch (node.name) {
             case 'onePlayer':
-                console.log('one player was clicked');
                 nodes.deactivate('twoPlayer');
                 nodes.activate('reset', 'diffTitle', 'diffEasy', 'diffMed', 'diffHard');
                 break;
             case 'twoPlayer':
-                console.log('two player was clicked');
                 nodes.deactivate('onePlayer');
-                nodes.activate('reset', 'turnTitle', 'turnCircle', 'turnCross');
+                nodes.activate('reset', 'turnTitle', 'turnCircle', 'turnCross', 'board');
                 break;
             case 'reset':
-                console.log('reset was clicked');
-                nodes.reset.active = false;
-                nodes.onePlayer.active = true;
-                nodes.twoPlayer.active = true;
                 nodes.deactivateAll();
                 nodes.activate('onePlayer', 'twoPlayer');
                 break;
+            case 'diffEasy': case 'diffMed': case 'diffHard':
+                nodes.activate('board');
+            default:
+                console.log(`${node.name} was clicked, with x:${x} and y:${y}`);
         }
 
     };
