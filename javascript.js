@@ -212,7 +212,7 @@ const Node = (name, isGroup=false, groupNode) => {
     return obj;
 };
 
-const Game = (playerType1, tokenType1, playerType2, tokenType2) => {
+const Game = (playerType1, tokenType1, playerType2, tokenType2, difficulty) => {
     const obj = {};
     obj.state = 'inProgress';
     obj.turn = 0;
@@ -220,15 +220,9 @@ const Game = (playerType1, tokenType1, playerType2, tokenType2) => {
 
     obj.players[0].type = playerType1;
     obj.players[0].token = tokenType1;
-    obj.players[0].play = function(x, y) {
-        board.addToken(x, y, this.token);
-    };
 
     obj.players[1].type = playerType2;
     obj.players[1].token = tokenType2;
-    obj.players[1].play = function(x, y) {
-        board.addToken(x, y, this.token)
-    };
 
     obj.nextTurn = function() {obj.turn = (obj.turn == 0) ? 1 : 0;};
     Object.defineProperty(obj, 'currentPlayer', {
@@ -306,7 +300,13 @@ const run = (function(){
                 break;
             case 'diffEasy': case 'diffMed': case 'diffHard':
                 nodes.activate('board');
-                game = Game('player', 'circle', 'ai', 'cross');
+                let firstPlayer = (Math.floor(Math.random()*2)) ? 'player' : 'ai';
+                if (firstPlayer === 'ai') {
+                    game = Game('ai', 'circle', 'player', 'cross', node.name);
+                    clickSlot(1, 1);
+                } else {
+                    game = Game('player', 'circle', 'ai', 'cross', node.name);
+                }
                 break;
             case 'slots':
                 clickSlot(x, y);
@@ -331,7 +331,7 @@ const run = (function(){
         nodes.results.node.textContent = text;
     }
 
-    function clickSlot(x, y, passthrough) {
+    function clickSlot(x, y) {
         if(game.state !== 'inProgress') return;
         if(!board.isEmpty(x, y) && game.state === 'paused') return
 
@@ -364,7 +364,7 @@ const run = (function(){
             setTimeout(() => {
                 console.log('did the second turn');
                 game.state = 'inProgress';
-                clickSlot(x, y, true);
+                clickSlot(x, y);
             }, 500);
         }
     };
