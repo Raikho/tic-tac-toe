@@ -44,40 +44,44 @@ const board = (function () {
     slots.highlightCondition = function(condition) {
         for ([x,y] of this.winConditions[condition])
             this[x][y].highlight();
-    }
+    };
     slots.sumCondition = function(condition) {
         let sum = 0;
         for ([x,y] of this.winConditions[condition])
             sum += this[x][y].num;
         return sum;
-    }
+    };
     slots.hasToken = function(condition, token) {
         for (let [x,y] of this.winConditions[condition])
             if (this[x][y].token === token)
                 return true;
         return false;
-    }
+    };
     slots.getEmpty = function(condition) {
         for ([x,y] of this.winConditions[condition]) {
             if (this[x][y].token === 'empty')
                 return [x,y];
         }
-    }
+    };
     slots.isFull = function() {
         for (let slot of this.flat())
             if (slot.num === 0) return false;
         return true;
-    }
+    };
 
     const addToken = function(x, y, token) {
         if (slots[x][y].token === 'empty')
             slots[x][y].token = token;
     };
 
+    const isEmpty = function(x, y) {
+        return (slots[x][y].token === 'empty');
+    };
+
     const clear = function() {
         for (let slot of slots.flat())
             slot.clear();
-    }
+    };
 
     const Result = function(state='inProgress', score, condition) {
         let out = {};
@@ -89,7 +93,7 @@ const board = (function () {
             out.direction = condition;
         }
         return out;
-    }
+    };
 
     const check = function() {
         for (let condition in slots.winConditions) {
@@ -156,9 +160,9 @@ const board = (function () {
         // Pick a move
         let num = Math.floor(Math.random() * bestMoves.length);
         return [bestMoves[num].x, bestMoves[num].y];
-    }
+    };
 
-    return {addToken, clear, check, generateMove};
+    return {addToken, isEmpty, clear, check, generateMove};
 })();
 
 // board.addToken(0, 0, 'empty');
@@ -327,8 +331,9 @@ const run = (function(){
         nodes.results.node.textContent = text;
     }
 
-    function clickSlot(x, y) {
+    function clickSlot(x, y, passthrough) {
         if(game.state !== 'inProgress') return;
+        if(!board.isEmpty(x, y) && game.state === 'paused') return
 
         [xNew, yNew] = game.play(x, y);
 
@@ -338,7 +343,8 @@ const run = (function(){
         game.state = results.state;
         switch (game.state) {
             case 'inProgress':
-                flipTurnIndicator();
+                if (nodes.twoPlayer.active)
+                    flipTurnIndicator();
                 game.nextTurn();
                 break;
             case 'tie':
@@ -352,13 +358,13 @@ const run = (function(){
                 break;
         }
 
-        if (game.state === 'inProgress' && game.currentPlayer.type === 'ai'){
+        if (game.state === 'inProgress' && game.currentPlayer.type === 'ai') {
             console.log('do the second turn');
             game.state = 'paused';
             setTimeout(() => {
                 console.log('did the second turn');
                 game.state = 'inProgress';
-                clickSlot(x, y);
+                clickSlot(x, y, true);
             }, 500);
         }
     };
